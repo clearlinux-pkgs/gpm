@@ -4,7 +4,7 @@
 #
 Name     : gpm
 Version  : 1fd19417b8a4dd9945347e98dfa97e4cfd798d77
-Release  : 1
+Release  : 2
 URL      : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Source0  : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Summary  : No detailed summary available
@@ -17,6 +17,7 @@ Requires: gpm-license = %{version}-%{release}
 Requires: gpm-man = %{version}-%{release}
 BuildRequires : bison
 BuildRequires : emacs
+BuildRequires : gpm-dev
 BuildRequires : ncurses-dev
 BuildRequires : pkgconfig(ncurses)
 BuildRequires : pkgconfig(ncursesw)
@@ -113,7 +114,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1557762669
+export SOURCE_DATE_EPOCH=1557778958
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
@@ -129,11 +130,14 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 check
 
 %install
-export SOURCE_DATE_EPOCH=1557762669
+export SOURCE_DATE_EPOCH=1557778958
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gpm
 cp COPYING %{buildroot}/usr/share/package-licenses/gpm/COPYING
 %make_install
+## install_append content
+ln -s libgpm.so.2  %{buildroot}/usr/lib64/libgpm.so
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -158,6 +162,7 @@ cp COPYING %{buildroot}/usr/share/package-licenses/gpm/COPYING
 %files dev
 %defattr(-,root,root,-)
 /usr/include/*.h
+/usr/lib64/libgpm.so
 
 %files doc
 %defattr(0644,root,root,0755)
