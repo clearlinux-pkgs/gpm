@@ -1,0 +1,4 @@
+Configure miss: texi2html
+Configure miss: ncurses/curses.h usability
+Configure miss: ncurses/curses.h presence
+Configure miss: ncurses/curses.h

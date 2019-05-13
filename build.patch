@@ -1,0 +1,11 @@
+--- gpm-1fd19417b8a4dd9945347e98dfa97e4cfd798d77/src/prog/gpm-root.y~	2016-07-26 21:21:36.000000000 +0000
++++ gpm-1fd19417b8a4dd9945347e98dfa97e4cfd798d77/src/prog/gpm-root.y	2019-05-13 15:47:49.803241182 +0000
+@@ -1197,7 +1197,7 @@
+    /* reap your zombies */
+    childaction.sa_handler=reap_children;
+ #if defined(__GLIBC__)
+-   __sigemptyset(&childaction.sa_mask);
++   sigemptyset(&childaction.sa_mask);
+ #else /* __GLIBC__ */
+    sigemptyset(&childaction.sa_mask);
+ #endif /* __GLIBC__ */
