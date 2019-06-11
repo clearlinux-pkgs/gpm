@@ -4,9 +4,10 @@
 #
 Name     : gpm
 Version  : 1fd19417b8a4dd9945347e98dfa97e4cfd798d77
-Release  : 2
+Release  : 3
 URL      : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Source0  : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
+Source1  : gpm.service
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
@@ -15,6 +16,7 @@ Requires: gpm-data = %{version}-%{release}
 Requires: gpm-lib = %{version}-%{release}
 Requires: gpm-license = %{version}-%{release}
 Requires: gpm-man = %{version}-%{release}
+Requires: gpm-services = %{version}-%{release}
 BuildRequires : bison
 BuildRequires : emacs
 BuildRequires : gpm-dev
@@ -43,6 +45,7 @@ Summary: bin components for the gpm package.
 Group: Binaries
 Requires: gpm-data = %{version}-%{release}
 Requires: gpm-license = %{version}-%{release}
+Requires: gpm-services = %{version}-%{release}
 
 %description bin
 bin components for the gpm package.
@@ -105,6 +108,14 @@ Group: Default
 man components for the gpm package.
 
 
+%package services
+Summary: services components for the gpm package.
+Group: Systemd services
+
+%description services
+services components for the gpm package.
+
+
 %prep
 %setup -q -n gpm-1fd19417b8a4dd9945347e98dfa97e4cfd798d77
 %patch1 -p1
@@ -114,7 +125,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1557778958
+export SOURCE_DATE_EPOCH=1560260790
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
@@ -130,11 +141,13 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 check
 
 %install
-export SOURCE_DATE_EPOCH=1557778958
+export SOURCE_DATE_EPOCH=1560260790
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gpm
 cp COPYING %{buildroot}/usr/share/package-licenses/gpm/COPYING
 %make_install
+mkdir -p %{buildroot}/usr/lib/systemd/system
+install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/gpm.service
 ## install_append content
 ln -s libgpm.so.2  %{buildroot}/usr/lib64/libgpm.so
 ## install_append end
@@ -184,3 +197,7 @@ ln -s libgpm.so.2  %{buildroot}/usr/lib64/libgpm.so
 /usr/share/man/man1/mouse-test.1
 /usr/share/man/man7/gpm-types.7
 /usr/share/man/man8/gpm.8
+
+%files services
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/gpm.service
