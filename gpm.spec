@@ -4,13 +4,14 @@
 #
 Name     : gpm
 Version  : 1fd19417b8a4dd9945347e98dfa97e4cfd798d77
-Release  : 3
+Release  : 4
 URL      : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Source0  : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Source1  : gpm.service
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
+Requires: gpm-autostart = %{version}-%{release}
 Requires: gpm-bin = %{version}-%{release}
 Requires: gpm-data = %{version}-%{release}
 Requires: gpm-lib = %{version}-%{release}
@@ -39,6 +40,14 @@ for "selection", to provide additional facilities.  From 0.18 onward
 gpm supports xterm as well, so you can run mouse-sensitive
 applications under X, and you can easily write curses applications
 which support the mouse on both the Linux console and xterm. The xterm
+
+%package autostart
+Summary: autostart components for the gpm package.
+Group: Default
+
+%description autostart
+autostart components for the gpm package.
+
 
 %package bin
 Summary: bin components for the gpm package.
@@ -125,7 +134,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1560260790
+export SOURCE_DATE_EPOCH=1560260930
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
@@ -141,7 +150,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 check
 
 %install
-export SOURCE_DATE_EPOCH=1560260790
+export SOURCE_DATE_EPOCH=1560260930
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gpm
 cp COPYING %{buildroot}/usr/share/package-licenses/gpm/COPYING
@@ -150,10 +159,16 @@ mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/gpm.service
 ## install_append content
 ln -s libgpm.so.2  %{buildroot}/usr/lib64/libgpm.so
+mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
+ln -s ../gpm.service  %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
 ## install_append end
 
 %files
 %defattr(-,root,root,-)
+
+%files autostart
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/multi-user.target.wants/gpm.service
 
 %files bin
 %defattr(-,root,root,-)
@@ -200,4 +215,5 @@ ln -s libgpm.so.2  %{buildroot}/usr/lib64/libgpm.so
 
 %files services
 %defattr(-,root,root,-)
+%exclude /usr/lib/systemd/system/multi-user.target.wants/gpm.service
 /usr/lib/systemd/system/gpm.service
