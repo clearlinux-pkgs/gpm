@@ -4,7 +4,7 @@
 #
 Name     : gpm
 Version  : 1fd19417b8a4dd9945347e98dfa97e4cfd798d77
-Release  : 4
+Release  : 5
 URL      : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Source0  : https://github.com/telmich/gpm/archive/1fd19417b8a4dd9945347e98dfa97e4cfd798d77.tar.gz
 Source1  : gpm.service
@@ -14,6 +14,7 @@ License  : GPL-2.0
 Requires: gpm-autostart = %{version}-%{release}
 Requires: gpm-bin = %{version}-%{release}
 Requires: gpm-data = %{version}-%{release}
+Requires: gpm-info = %{version}-%{release}
 Requires: gpm-lib = %{version}-%{release}
 Requires: gpm-license = %{version}-%{release}
 Requires: gpm-man = %{version}-%{release}
@@ -76,19 +77,17 @@ Requires: gpm-bin = %{version}-%{release}
 Requires: gpm-data = %{version}-%{release}
 Provides: gpm-devel = %{version}-%{release}
 Requires: gpm = %{version}-%{release}
-Requires: gpm = %{version}-%{release}
 
 %description dev
 dev components for the gpm package.
 
 
-%package doc
-Summary: doc components for the gpm package.
-Group: Documentation
-Requires: gpm-man = %{version}-%{release}
+%package info
+Summary: info components for the gpm package.
+Group: Default
 
-%description doc
-doc components for the gpm package.
+%description info
+info components for the gpm package.
 
 
 %package lib
@@ -127,33 +126,35 @@ services components for the gpm package.
 
 %prep
 %setup -q -n gpm-1fd19417b8a4dd9945347e98dfa97e4cfd798d77
+cd %{_builddir}/gpm-1fd19417b8a4dd9945347e98dfa97e4cfd798d77
 %patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1560260930
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1573789215
+export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
 %autogen --disable-static
-make CFLAGS="$CFLAGS -Isrc/headers/"
+make  CFLAGS="$CFLAGS -Isrc/headers/"
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 check
 
 %install
-export SOURCE_DATE_EPOCH=1560260930
+export SOURCE_DATE_EPOCH=1573789215
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gpm
-cp COPYING %{buildroot}/usr/share/package-licenses/gpm/COPYING
+cp %{_builddir}/gpm-1fd19417b8a4dd9945347e98dfa97e4cfd798d77/COPYING %{buildroot}/usr/share/package-licenses/gpm/17e3b0eea99abffe6ac71e65627413236e0b117a
 %make_install
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/gpm.service
@@ -189,12 +190,12 @@ ln -s ../gpm.service  %{buildroot}/usr/lib/systemd/system/multi-user.target.want
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/gpm.h
 /usr/lib64/libgpm.so
 
-%files doc
+%files info
 %defattr(0644,root,root,0755)
-%doc /usr/share/info/*
+/usr/share/info/gpm.info
 
 %files lib
 %defattr(-,root,root,-)
@@ -203,7 +204,7 @@ ln -s ../gpm.service  %{buildroot}/usr/lib/systemd/system/multi-user.target.want
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/gpm/COPYING
+/usr/share/package-licenses/gpm/17e3b0eea99abffe6ac71e65627413236e0b117a
 
 %files man
 %defattr(0644,root,root,0755)
