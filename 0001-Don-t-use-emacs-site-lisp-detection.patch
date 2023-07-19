@@ -1,0 +1,33 @@
+From 43041b58fe08c3de2543e8a155493c8d4702e07d Mon Sep 17 00:00:00 2001
+From: William Douglas <william.douglas@intel.com>
+Date: Wed, 19 Jul 2023 14:33:05 -0700
+Subject: [PATCH] Don't use emacs site-lisp detection
+
+Seems to be broken with latest emacs
+
+Signed-off-by: William Douglas <william.douglas@intel.com>
+---
+ configure.ac.footer | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/configure.ac.footer b/configure.ac.footer
+index 1e5e4da..5c60a2e 100644
+--- a/configure.ac.footer
++++ b/configure.ac.footer
+@@ -59,12 +59,7 @@ else
+         ELISP="emacs/t-mouse.el emacs/t-mouse.elc"
+ fi
+ 
+-if test $EMACS != : ; then
+-        ITZ_PATH_SITE_LISP
+-        lispdir=${itz_cv_path_site_lisp}
+-else
+-        lispdir='${datadir}/emacs/site-lisp'
+-fi
++lispdir='${datadir}/emacs/site-lisp'
+ 
+ # Header-checks
+ AC_CHECK_HEADERS(syslog.h linux/input.h linux/joystick.h ncurses.h ncurses/curses.h curses.h)
+-- 
+2.41.0
+
